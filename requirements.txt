@@ -1,0 +1,13 @@
+streamlit
+mysql-connector-python
+pytesseract
+scikit-learn
+pandas
+Pillow
+python-dotenv
+bcrypt
+faker
+reportlab
+opencv-python
+numpy
+extra-streamlit-components
