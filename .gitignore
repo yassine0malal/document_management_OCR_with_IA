@@ -1,2 +1,4 @@
 .env.example
 uploads/
+/__pycache__
+/.venv

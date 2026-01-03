@@ -17,3 +17,7 @@ python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
 requests
+pdf2image
+pypdf
+plotly
+openpyxl
