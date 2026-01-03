@@ -1,22 +1,6 @@
-import sys
-import os
-
-# Robust environment handling: Ensure .venv packages are available
-venv_path = os.path.join(os.path.dirname(__file__), ".venv", "lib", "python3.13", "site-packages")
-if os.path.exists(venv_path) and venv_path not in sys.path:
-    sys.path.append(venv_path)
-
-try:
-    import mysql.connector
-except ImportError:
-    # Fallback for different python versions in venv
-    import glob
-    site_packages = glob.glob(os.path.join(os.path.dirname(__file__), ".venv", "lib", "python*", "site-packages"))
-    if site_packages:
-        sys.path.append(site_packages[0])
-    import mysql.connector
-
+import mysql.connector
 from mysql.connector import Error
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,24 +11,18 @@ class DatabaseManager:
         self.user = os.getenv("DB_USER", "root")
         self.password = os.getenv("DB_PASSWORD", "")
         self.database = os.getenv("DB_NAME", "gestion_documents")
-        self.connection = None
 
     def connect(self):
         try:
-            self.connection = mysql.connector.connect(
+            return mysql.connector.connect(
                 host=self.host,
                 user=self.user,
                 password=self.password,
                 database=self.database
             )
-            return self.connection
         except Error as e:
             print(f"Error connecting to MySQL: {e}")
             return None
-
-    def close(self):
-        if self.connection and self.connection.is_connected():
-            self.connection.close()
 
     def execute_query(self, query, params=None):
         conn = self.connect()
@@ -64,6 +42,6 @@ class DatabaseManager:
             return None
         finally:
             cursor.close()
-            self.close()
+            conn.close()
 
 db_manager = DatabaseManager()
