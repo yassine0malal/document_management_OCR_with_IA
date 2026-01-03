@@ -60,7 +60,7 @@ class APIClient:
     def get_stats(self, token):
         try:
             response = requests.get(
-                f"{self.base_url}/stats",
+                f"{self.base_url}/documents/stats",
                 headers=self.get_headers(token)
             )
             return response.json(), response.status_code

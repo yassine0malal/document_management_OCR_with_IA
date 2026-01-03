@@ -35,7 +35,50 @@ def login_page():
             else:
                 st.error(f"Erreur : {res.get('detail', 'Identifiants incorrects')}")
 
+# --- UI STYLES ---
+RESULT_BOX_CSS = """
+<style>
+    .extraction-container {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        margin-top: 20px;
+    }
+    .extraction-header {
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .extraction-text {
+        font-family: 'Courier New', Courier, monospace;
+        color: #34495e;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    .badge {
+        background-color: #3498db;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+    }
+</style>
+"""
+
 def dashboard_page():
+    st.markdown(RESULT_BOX_CSS, unsafe_allow_html=True)
     st.title(f"🚀 Tableau de Bord - {st.session_state.user['nom']}")
     
     col1, col2 = st.columns([2, 1])
@@ -45,16 +88,27 @@ def dashboard_page():
         uploaded_file = st.file_uploader("Choisir une image pour analyse OCR/IA", type=['png', 'jpg', 'jpeg'])
         if uploaded_file:
             if st.button("Lancer l'analyse intelligente"):
-                with st.spinner("Traitement en cours..."):
+                with st.spinner("Analyse en cours..."):
                     res, status_code = api_client.upload_document(
                         st.session_state.token, 
                         uploaded_file.read(), 
                         uploaded_file.name
                     )
                     if status_code == 200:
-                        st.success(f"Terminé ! Catégorie : **{res['category']}**")
+                        st.success(f"Analyse terminée avec succès !")
+                        
+                        # Beautiful Result Box
+                        st.markdown(f"""
+                            <div class="extraction-container">
+                                <div class="extraction-header">
+                                    <span>📄 Texte Extrait</span>
+                                    <span class="badge">{res['category']} ({int(res['confidence']*100)}%)</span>
+                                </div>
+                                <div class="extraction-text">{res['text']}</div>
+                            </div>
+                        """, unsafe_allow_html=True)
                     else:
-                        st.error("Erreur serveur lors de l'analyse.")
+                        st.error(f"Erreur serveur : {res.get('detail', 'Inconnu')}")
 
     with col2:
         st.subheader("📊 Votre Activité")
@@ -127,12 +181,12 @@ def main():
         login_page()
     else:
         # Side Menu
-        st.sidebar.title("💎 IntelliDoc AI")
+        st.sidebar.title("IntelliDoc AI")
         menu = st.sidebar.radio("Navigation", ["Tableau de bord", "Bibliothèque"])
         
         # Dedicated Logout Button (Prevents refresh loop bugs)
         st.sidebar.markdown("---")
-        if st.sidebar.button("🚪 Déconnexion", use_container_width=True):
+        if st.sidebar.button("Déconnexion", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.user = None
             st.session_state.token = None
