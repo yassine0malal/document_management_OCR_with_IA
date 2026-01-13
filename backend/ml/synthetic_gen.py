@@ -5,9 +5,16 @@ import random
 import os
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+import sys
+
+# Ajouter le dossier courant au path pour les imports
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(PROJECT_ROOT)
 
 class SyntheticDataGenerator:
-    def __init__(self, output_dir="uploads/synthetic"):
+    def __init__(self, output_dir=None):
+        if output_dir is None:
+            output_dir = os.path.join(PROJECT_ROOT, "uploads/synthetic")
         self.output_dir = output_dir
         self.faker = Faker('fr_FR')
         os.makedirs(self.output_dir, exist_ok=True)

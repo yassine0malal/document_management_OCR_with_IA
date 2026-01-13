@@ -1,11 +1,17 @@
 import cv2
 import numpy as np
-import os
 import random
+import sys
 from PIL import Image
 
+# Ajouter le dossier courant au path pour les imports
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(PROJECT_ROOT)
+
 class DataAugmentor:
-    def __init__(self, output_dir="uploads/augmented"):
+    def __init__(self, output_dir=None):
+        if output_dir is None:
+            output_dir = os.path.join(PROJECT_ROOT, "uploads/augmented")
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
 

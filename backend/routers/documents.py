@@ -14,12 +14,22 @@ async def upload_document(
     current_user: dict = Depends(get_current_user)
 ):
     contents = await file.read()
+    import logging
+    
     # Process OCR and Classification
     text, error = ocr_service.extract_from_bytes(contents, filename=file.filename)
     if error:
+        logging.error(f"OCR FAILED for {file.filename}: {error}")
         raise HTTPException(status_code=500, detail=f"OCR Error: {error}")
     
+    logging.info(f"--- DEBUG UPLOAD {file.filename} --")
+    logging.info(f"Extracted Text Length: {len(text) if text else 0}")
+    logging.info(f"Extracted Text Preview: {text[:500] if text else 'EMPTY TEXT'}")
+    
     category, confidence = classifier_service.classify(text)
+    
+    logging.info(f"Classification Result: {category} (Conf: {confidence})")
+    logging.info("----------------------------------")
     
     # Metadata extraction
     file_size = len(contents)
