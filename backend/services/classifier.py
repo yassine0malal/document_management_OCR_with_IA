@@ -9,6 +9,10 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier, LogisticRegression
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.pipeline import Pipeline
+
+
+
+
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
 
@@ -49,13 +53,16 @@ class MLDocumentClassifier:
                 "facture", "invoice", "tva", "montant ht", "montant ttc", "net à payer", 
                 "total à payer", "solde dû", "virement", "iban", "bic", 
                 "numéro de facture", "date d'échéance", "siret", "siren", "intracommunautaire",
-                "billed to", "due date", "amount due", "subtotal", "tax", "billing"
-            ],
-            "RECU": [
+                "billed to", "due date", "amount due", "subtotal", "tax", "billing",
                 "recu", "reçu", "ticket de caisse", "rendu monnaie", "total ttc", "carte bancaire", 
                 "merci de votre visite", "ticket", "caisse", "receipt", "cashier", "change",
                 "store", "transaction"
             ],
+            # "RECU": [
+            #     "recu", "reçu", "ticket de caisse", "rendu monnaie", "total ttc", "carte bancaire", 
+            #     "merci de votre visite", "ticket", "caisse", "receipt", "cashier", "change",
+            #     "store", "transaction"
+            # ],
             "CONTRAT": [
                 "contrat", "entre les soussignés", "il a été convenu", "article 1", 
                 "signature", "engagement", "avenant", "résiliation", "clause",
